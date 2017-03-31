@@ -1,16 +1,22 @@
 var webpack = require("webpack");
 var path = require('path');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
-  entry: './index.ts',
-  output: {
-    filename: 'index.js',
-    path: __dirname + '/dist',
-    libraryTarget: 'umd'
+  context: path.resolve(__dirname, './app'),
+  entry: {
+    main: './main.tsx'
   },
+  output: {
+    path: path.resolve(__dirname, './dist'),
+    filename: '[name].js',
+    chunkFilename: '[id].[chunkhash].js',
+    publicPath: '/'
+  },
+  devtool: 'source-map',
   resolve: {
     alias: {
-      jquery: path.resolve(__dirname, './bower_components/jquery/jquery.js')
+      '_master-page': path.resolve(__dirname, './app/common/root-component/master-page')
     },
     // Add `.ts` and `.tsx` as a resolvable extension.
     extensions: ['.ts', '.tsx', '.js'] // note if using webpack 1 you'd also need a '' in the array as well
@@ -25,10 +31,18 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [
-          { loader: "style-loader" },
-          { loader: "css-loader" },
-        ]
+        use: ExtractTextPlugin.extract({
+          fallback: "style-loader",
+          use: "css-loader"
+        })
+      },
+      {
+        test: /\.scss$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          //resolve-url-loader may be chained before sass-loader if necessary
+          use: ['css-loader', 'sass-loader']
+        })
       },
       {
         test: /\.(png|jpg|gif|svg|eot|ttf|woff|woff2)$/,
@@ -38,13 +52,19 @@ module.exports = {
         }
       },
       {
-        test: require.resolve('./bower_components/jquery/jquery.js'),
+        test: require.resolve('./node_modules/jquery/dist/jquery.js'),
         loader: "expose-loader?$!expose-loader?jQuery"
       }
     ]
   },
-  externals: {
-    'react': 'react',
-    'react-dom': 'react-dom'
-  }
+  plugins: [
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      options: {
+        context: __dirname
+      }
+    }),
+    new ExtractTextPlugin('style.css'),
+    //new webpack.optimize.CommonsChunkPlugin('vendor.js')
+  ]
 }

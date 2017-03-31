@@ -12,7 +12,12 @@
         ],
         "target": "es5",
         "declaration": false,
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "baseUrl": ".",
+        "rootDir": ".",
+        "paths": {
+            "_master-page": ["app/common/root-component/master-page"]
+        }
     },
     "exclude": [
         "node_modules"
