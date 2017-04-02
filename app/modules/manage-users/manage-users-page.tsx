@@ -12,7 +12,7 @@ const store = new ManageUsersStore();
 
 class ManageUsersPage extends React.Component<any, any> {
     static getStores(props) {
-        PageService.getPageData("/manage-users", store);
+        PageService.getPageData("/manage-users", "Manage Users", store);
 
         return [store];
     }
@@ -68,7 +68,7 @@ class ManageUsersPage extends React.Component<any, any> {
         }
 
         return (
-            <MasterPage>
+            <MasterPage pages={PageService.getPages()}>
                 <h1 className="page-header">Manage Users</h1>
                 {userList}
             </MasterPage>

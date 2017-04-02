@@ -9,7 +9,7 @@ const store = new HomeStore();
 
 class HomePage extends React.Component<any, any> {
     static getStores(props) {
-        PageService.getPageData("/", store);
+        PageService.getPageData("/", "Home", store);
 
         return [store];
     }
@@ -21,7 +21,7 @@ class HomePage extends React.Component<any, any> {
     }
     render() {
         return (
-            <MasterPage>
+            <MasterPage pages={PageService.getPages()}>
                 <h1 className="page-header">Dashboard</h1>
             </MasterPage>
         );

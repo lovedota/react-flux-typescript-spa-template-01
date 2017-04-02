@@ -17,11 +17,13 @@ class PageService {
         return result;
     }
 
-    public getPageData(url: string, store) {
+    public getPageData(url: string, title: string, store) {
         const page = this._pages.get(url);
 
         if (page) {
-            store.data = page.data;
+            store.data = Object.assign({}, page.data);
+        } else {
+            this.setPageData(url, title, store.data);
         }
     }
 

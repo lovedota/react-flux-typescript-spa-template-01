@@ -12,7 +12,7 @@ class Navbar extends React.Component<any, any> {
                         <ul className="nav navbar-nav navbar-right">
                             <li>
                                 <Link to="/" title="Dashboard">Dashboard</Link>
-                            </li>
+                            </li> 
                             <li>
                                 <Link to="/manage-users" title="Manage Users">Manage Users</Link>
                             </li>

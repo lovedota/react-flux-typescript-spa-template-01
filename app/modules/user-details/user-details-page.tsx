@@ -25,13 +25,30 @@ class UserDetailsPage extends React.Component<any, any> {
     }
 
     componentDidMount() {
-        PageService.getPageData(`/user-details/${this.props.match.params.id}`, this.store);
+        const userId = this.props.match.params.id;
+
+        PageService.getPageData(
+            `/user-details/${userId}`,
+            `User Details ${userId}`,
+            this.store
+        );
 
         this.eventHandler = this.store.addListener(this.onStateChange.bind(this));
 
         if (!this.store.data.isLoaded) {
             UserDetailsAction.init(this.props.match.params.id);
         } else {
+            this.onStateChange();
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        const currentUserId = this.props.match.params.id;
+        const newUserId = nextProps.match.params.id;
+
+        if (this.props.match.params.id !== newUserId) {
+            PageService.setPageData(`/user-details/${currentUserId}`, `User Details ${currentUserId}`, this.store.data);
+            PageService.getPageData(`/user-details/${newUserId}`, `User Details ${newUserId}`, this.store);
             this.onStateChange();
         }
     }
@@ -50,10 +67,6 @@ class UserDetailsPage extends React.Component<any, any> {
         const { isLoading, user } = this.state;
 
         let userDetails = <h3>Loading....</h3>;
-
-        if (!this.store) {
-            userDetails = null;
-        }
 
         if (!isLoading && user) {
             userDetails = (
@@ -88,12 +101,20 @@ class UserDetailsPage extends React.Component<any, any> {
                             onChange={() => console.log("Changed")}
                         />
                     </div>
+                    <button className="btn btn-primary">Submit</button>
+                    &nbsp;
+                    <a
+                        className="btn btn-default"
+                        onClick={() => console.log(this.props.history.replace("/manage-users"))}
+                    >
+                        Back to List
+                    </a>
                 </form>
             );
         }
 
         return (
-            <MasterPage>
+            <MasterPage pages={PageService.getPages()}>
                 <h1 className="page-header">User Details</h1>
                 {userDetails}
             </MasterPage>
